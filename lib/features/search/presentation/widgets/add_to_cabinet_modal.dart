@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
+import 'package:my_meds/features/cabinet/domain/models/medication.dart';
+import 'package:my_meds/features/cabinet/domain/models/medication_form.dart';
+import 'package:my_meds/features/cabinet/presentation/providers/cabinet_providers.dart';
 import 'package:my_meds/features/search/domain/medication_info.dart';
 
-/// Modal bottom sheet providing a prefilled form to add a medication to the user's personal cabinet.
-class AddToCabinetModal extends StatefulWidget {
+/// Modal bottom sheet providing a prefilled form to add an openFDA medication to the user's personal cabinet.
+class AddToCabinetModal extends ConsumerStatefulWidget {
   const AddToCabinetModal({
     required this.medication,
     super.key,
@@ -22,17 +26,18 @@ class AddToCabinetModal extends StatefulWidget {
   }
 
   @override
-  State<AddToCabinetModal> createState() => _AddToCabinetModalState();
+  ConsumerState<AddToCabinetModal> createState() => _AddToCabinetModalState();
 }
 
-class _AddToCabinetModalState extends State<AddToCabinetModal> {
+class _AddToCabinetModalState extends ConsumerState<AddToCabinetModal> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _dosageController;
   late final TextEditingController _quantityController;
   late final TextEditingController _instructionsController;
 
-  String _frequency = 'Once daily';
+  MedicationForm _selectedForm = MedicationForm.tablet;
+  final DateTime _expirationDate = DateTime.now().add(const Duration(days: 180));
   bool _isSaving = false;
 
   @override
@@ -42,14 +47,20 @@ class _AddToCabinetModalState extends State<AddToCabinetModal> {
     _dosageController = TextEditingController(
       text: widget.medication.activeIngredients.isNotEmpty
           ? widget.medication.activeIngredients.first
-          : (widget.medication.route.isNotEmpty
-              ? widget.medication.route.first
-              : '1 tablet'),
+          : '1 dose',
     );
     _quantityController = TextEditingController(text: '30');
     _instructionsController = TextEditingController(
       text: widget.medication.purpose ?? widget.medication.genericName ?? '',
     );
+
+    // Guess form from route if possible
+    final routeStr = widget.medication.route.join(' ').toLowerCase();
+    if (routeStr.contains('injection')) {
+      _selectedForm = MedicationForm.injection;
+    } else if (routeStr.contains('drop') || routeStr.contains('ophthalmic') || routeStr.contains('otic')) {
+      _selectedForm = MedicationForm.drops;
+    }
   }
 
   @override
@@ -65,22 +76,47 @@ class _AddToCabinetModalState extends State<AddToCabinetModal> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isSaving = true);
 
-    // Simulate saving to personal cabinet / Firestore
-    await Future.delayed(const Duration(milliseconds: 600));
+    final quantity = int.tryParse(_quantityController.text.trim()) ?? 30;
+
+    final newMedication = Medication(
+      id: '',
+      name: _nameController.text.trim(),
+      dosage: _dosageController.text.trim(),
+      form: _selectedForm,
+      quantity: quantity,
+      expirationDate: _expirationDate,
+      storageConditions: widget.medication.storageAndHandling,
+      notes: _instructionsController.text.trim().isNotEmpty
+          ? _instructionsController.text.trim()
+          : null,
+      createdAt: DateTime.now(),
+    );
+
+    final success = await ref
+        .read(cabinetControllerProvider.notifier)
+        .addMedication(newMedication);
 
     if (mounted) {
-      Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${_nameController.text} added to your cabinet!'),
-          backgroundColor: Colors.green,
-          action: SnackBarAction(
-            label: 'VIEW',
-            textColor: Colors.white,
-            onPressed: () {},
+      setState(() => _isSaving = false);
+      if (success) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${_nameController.text} added to your cabinet!'),
+            backgroundColor: Colors.green,
           ),
-        ),
-      );
+        );
+      } else {
+        final errorState = ref.read(cabinetControllerProvider);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              errorState.error?.toString() ?? 'Failed to save to cabinet.',
+            ),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
     }
   }
 
@@ -140,30 +176,26 @@ class _AddToCabinetModalState extends State<AddToCabinetModal> {
                     hintText: 'e.g. 200 mg, 1 tablet',
                     prefixIcon: Icon(Icons.healing_outlined),
                   ),
+                  validator: (v) =>
+                      v == null || v.trim().isEmpty ? 'Dosage is required' : null,
                 ),
                 const SizedBox(height: 12),
 
-                // Frequency dropdown
-                DropdownButtonFormField<String>(
-                  initialValue: _frequency,
+                // Formulation Form dropdown
+                DropdownButtonFormField<MedicationForm>(
+                  initialValue: _selectedForm,
                   decoration: const InputDecoration(
-                    labelText: 'Schedule / Frequency',
-                    prefixIcon: Icon(Icons.access_time_outlined),
+                    labelText: 'Formulation Form',
+                    prefixIcon: Icon(Icons.category_outlined),
                   ),
-                  items: const [
-                    DropdownMenuItem(
-                        value: 'Once daily', child: Text('Once daily')),
-                    DropdownMenuItem(
-                        value: 'Twice daily', child: Text('Twice daily')),
-                    DropdownMenuItem(
-                        value: '3 times daily', child: Text('3 times daily')),
-                    DropdownMenuItem(
-                        value: 'As needed', child: Text('As needed (PRN)')),
-                    DropdownMenuItem(
-                        value: 'Weekly', child: Text('Once a week')),
-                  ],
+                  items: MedicationForm.values.map((f) {
+                    return DropdownMenuItem(
+                      value: f,
+                      child: Text(f.displayName),
+                    );
+                  }).toList(),
                   onChanged: (val) {
-                    if (val != null) setState(() => _frequency = val);
+                    if (val != null) setState(() => _selectedForm = val);
                   },
                 ),
                 const SizedBox(height: 12),
@@ -177,6 +209,12 @@ class _AddToCabinetModalState extends State<AddToCabinetModal> {
                     hintText: 'e.g. 30',
                     prefixIcon: Icon(Icons.inventory_2_outlined),
                   ),
+                  validator: (v) {
+                    if (v == null || int.tryParse(v) == null) {
+                      return 'Enter a valid quantity';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 12),
 
