@@ -34,6 +34,10 @@ dependencies:
   # Authentication
   google_sign_in: ^6.2.2
 
+  # Networking & Caching
+  http: ^1.2.2
+  shared_preferences: ^2.3.2
+
   # Icons
   cupertino_icons: ^1.0.8
 
