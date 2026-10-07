@@ -1,3 +1,5 @@
+import 'package:my_meds/features/cabinet/domain/models/inventory_settings.dart';
+import 'package:my_meds/features/cabinet/domain/models/medication.dart';
 import 'package:my_meds/features/reminders/domain/models/medication_reminder.dart';
 
 /// Abstract service handling local and push medication notifications.
@@ -13,6 +15,12 @@ abstract class NotificationService {
 
   /// Cancel all scheduled notifications for a [reminderId].
   Future<void> cancelReminderNotifications(String reminderId);
+
+  /// Schedules daily recurring inventory alerts for expired, expiring, or low-stock items.
+  Future<void> scheduleDailyInventoryAlert(
+    List<Medication> medications,
+    InventorySettings settings,
+  );
 
   /// Cancel all scheduled notifications in the app.
   Future<void> cancelAllNotifications();

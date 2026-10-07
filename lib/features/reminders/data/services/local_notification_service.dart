@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:my_meds/features/cabinet/domain/models/inventory_settings.dart';
+import 'package:my_meds/features/cabinet/domain/models/medication.dart';
+import 'package:my_meds/features/cabinet/domain/services/stock_expiration_service.dart';
 import 'package:my_meds/features/reminders/domain/models/medication_reminder.dart';
 import 'package:my_meds/features/reminders/domain/services/dose_schedule_service.dart';
 import 'package:my_meds/features/reminders/domain/services/notification_service.dart';
@@ -192,6 +195,78 @@ class LocalNotificationService implements NotificationService {
         final id = (baseHash * 100) + (dayOffset * 10) + slot;
         await _plugin.cancel(id);
       }
+    }
+  }
+
+  static const int inventoryAlertNotificationId = 999999;
+  static const String inventoryChannelId = 'inventory_alerts_channel';
+  static const String inventoryChannelName = 'Medicine Inventory Alerts';
+
+  @override
+  Future<void> scheduleDailyInventoryAlert(
+    List<Medication> medications,
+    InventorySettings settings,
+  ) async {
+    await initialize();
+    await _plugin.cancel(inventoryAlertNotificationId);
+
+    if (!settings.dailyStockAlertsEnabled) return;
+
+    final alertBody = const StockExpirationService().generateAlertNotificationBody(
+      medications,
+      settings: settings,
+    );
+
+    if (alertBody == null) return;
+
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      settings.dailyAlertHour,
+      settings.dailyAlertMinute,
+    );
+
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    const androidDetails = AndroidNotificationDetails(
+      inventoryChannelId,
+      inventoryChannelName,
+      channelDescription: 'Daily alerts for expired, expiring, or low-stock medications',
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: 'Inventory alert',
+    );
+
+    const darwinDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: darwinDetails,
+    );
+
+    try {
+      await _plugin.zonedSchedule(
+        inventoryAlertNotificationId,
+        'Medicine Cabinet Alert',
+        alertBody,
+        scheduledDate,
+        notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    } catch (e) {
+      debugPrint('Failed to schedule daily inventory alert: $e');
     }
   }
 
