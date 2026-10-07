@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/auth/presentation/providers/auth_provider.dart';
+import 'package:my_meds/features/settings/presentation/providers/inventory_settings_providers.dart';
 
 /// Settings and account management screen.
 class SettingsScreen extends ConsumerWidget {
@@ -167,6 +168,121 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 24),
+
+            // Stock & Expiration Management Section
+            Text(
+              'Stock & Expiration Thresholds',
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Consumer(
+              builder: (context, ref, _) {
+                final inventorySettings = ref.watch(inventorySettingsProvider);
+                final controller = ref.read(inventorySettingsProvider.notifier);
+
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      children: [
+                        // Expiring Soon Threshold
+                        ListTile(
+                          leading: const Icon(Icons.hourglass_bottom_rounded),
+                          title: const Text('Expiring Soon Threshold'),
+                          subtitle: Text(
+                            'Flag medications expiring within ${inventorySettings.expiringSoonDaysThreshold} days',
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              const Text('7d', style: TextStyle(fontSize: 12)),
+                              Expanded(
+                                child: Slider(
+                                  value: inventorySettings.expiringSoonDaysThreshold.toDouble(),
+                                  min: 7,
+                                  max: 90,
+                                  divisions: 83,
+                                  label: '${inventorySettings.expiringSoonDaysThreshold} days',
+                                  onChanged: (val) {
+                                    controller.updateExpiringSoonDays(val.round());
+                                  },
+                                ),
+                              ),
+                              const Text('90d', style: TextStyle(fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                        const Divider(height: 1),
+
+                        // Low Stock Threshold
+                        ListTile(
+                          leading: const Icon(Icons.production_quantity_limits_rounded),
+                          title: const Text('Low Stock Threshold'),
+                          subtitle: Text(
+                            'Flag when quantity is ${inventorySettings.lowStockThreshold} units or fewer',
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              const Text('1 unit', style: TextStyle(fontSize: 12)),
+                              Expanded(
+                                child: Slider(
+                                  value: inventorySettings.lowStockThreshold.toDouble(),
+                                  min: 1,
+                                  max: 20,
+                                  divisions: 19,
+                                  label: '${inventorySettings.lowStockThreshold} units',
+                                  onChanged: (val) {
+                                    controller.updateLowStockThreshold(val.round());
+                                  },
+                                ),
+                              ),
+                              const Text('20 units', style: TextStyle(fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                        const Divider(height: 1),
+
+                        // Auto Decrement on Dose Taken
+                        SwitchListTile(
+                          secondary: const Icon(Icons.auto_mode_rounded),
+                          title: const Text('Auto-decrement stock on dose taken'),
+                          subtitle: const Text(
+                            'Deduct 1 unit from cabinet inventory automatically when marking a dose Taken',
+                          ),
+                          value: inventorySettings.autoDecrementOnDoseTaken,
+                          onChanged: (val) {
+                            controller.toggleAutoDecrement(val);
+                          },
+                        ),
+                        const Divider(height: 1),
+
+                        // Daily Stock Alert Notifications
+                        SwitchListTile(
+                          secondary: const Icon(Icons.notifications_active_outlined),
+                          title: const Text('Daily stock & expiry alerts'),
+                          subtitle: const Text(
+                            'Receive daily notifications summarizing items needing attention',
+                          ),
+                          value: inventorySettings.dailyStockAlertsEnabled,
+                          onChanged: (val) {
+                            controller.toggleDailyStockAlerts(val);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 24),
 

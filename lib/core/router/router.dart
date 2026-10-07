@@ -9,11 +9,11 @@ import 'package:my_meds/features/auth/presentation/screens/forgot_password_scree
 import 'package:my_meds/features/auth/presentation/screens/login_screen.dart';
 import 'package:my_meds/features/auth/presentation/screens/register_screen.dart';
 import 'package:my_meds/features/auth/presentation/screens/splash_screen.dart';
-import 'package:my_meds/features/cabinet/presentation/cabinet_screen.dart';
+import 'package:my_meds/features/cabinet/presentation/screens/cabinet_screen.dart';
 import 'package:my_meds/features/dashboard/presentation/dashboard_screen.dart';
 import 'package:my_meds/features/label_reader/presentation/screens/label_camera_screen.dart';
 import 'package:my_meds/features/more/presentation/more_screen.dart';
-import 'package:my_meds/features/reminders/presentation/reminders_screen.dart';
+import 'package:my_meds/features/reminders/presentation/screens/reminders_screen.dart';
 import 'package:my_meds/features/search/presentation/search_screen.dart';
 import 'package:my_meds/features/settings/presentation/screens/settings_screen.dart';
 
