@@ -11,6 +11,7 @@ import 'package:my_meds/features/auth/presentation/screens/register_screen.dart'
 import 'package:my_meds/features/auth/presentation/screens/splash_screen.dart';
 import 'package:my_meds/features/cabinet/presentation/cabinet_screen.dart';
 import 'package:my_meds/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:my_meds/features/label_reader/presentation/screens/label_camera_screen.dart';
 import 'package:my_meds/features/more/presentation/more_screen.dart';
 import 'package:my_meds/features/reminders/presentation/reminders_screen.dart';
 import 'package:my_meds/features/search/presentation/search_screen.dart';
@@ -31,6 +32,7 @@ class AppRoutes {
   static const String dashboard = '/dashboard';
   static const String more = '/more';
   static const String settings = '/settings';
+  static const String scan = '/scan';
 }
 
 /// Navigator keys.
@@ -107,6 +109,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.scan,
+        builder: (context, state) => const LabelCameraScreen(),
       ),
 
       // ── Main Shell (Bottom Navigation) ──

@@ -55,6 +55,11 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
         title: const Text('My Medicine Cabinet'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.document_scanner_outlined),
+            tooltip: 'AI Label Scanner',
+            onPressed: () => context.push(AppRoutes.scan),
+          ),
+          IconButton(
             icon: const Icon(Icons.add),
             tooltip: 'Add Medication',
             onPressed: _openAddMedication,
