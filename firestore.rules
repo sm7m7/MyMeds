@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if the request is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if the authenticated user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profiles collection
+    // Each user can only read, create, update, or delete their own document and subcollections
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // All subcollections under the user's document (e.g. medications, reminders, logs)
+      match /{subcollection=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}
