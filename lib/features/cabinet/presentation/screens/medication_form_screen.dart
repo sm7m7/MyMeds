@@ -5,6 +5,9 @@ import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication_form.dart';
 import 'package:my_meds/features/cabinet/presentation/providers/cabinet_providers.dart';
+import 'package:my_meds/features/interactions/presentation/providers/interaction_providers.dart';
+import 'package:my_meds/features/interactions/presentation/widgets/interaction_warning_dialog.dart';
+import 'package:my_meds/l10n/app_localizations.dart';
 
 /// Screen for adding a new medication or editing an existing one in the cabinet.
 class MedicationFormScreen extends ConsumerStatefulWidget {
@@ -93,6 +96,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
     if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
 
+    final l10n = AppLocalizations.of(context)!;
     final quantity = int.tryParse(_quantityController.text.trim()) ?? 0;
 
     final medication = Medication(
@@ -112,6 +116,27 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
       updatedAt: widget.isEditing ? DateTime.now() : null,
     );
 
+    // ── Interaction check (add only; skip when editing same medication) ──
+    if (!widget.isEditing) {
+      final existing = ref.read(cabinetMedicationsStreamProvider).valueOrNull ?? [];
+      final repository = ref.read(interactionRepositoryProvider);
+      final interactions = await checkNewMedicationInteractions(
+        repository: repository,
+        newMedication: medication,
+        existingMedications: existing,
+      );
+
+      if (interactions.isNotEmpty && mounted) {
+        final proceed = await InteractionWarningDialog.show(
+          context: context,
+          interactions: interactions,
+          newMedicationName: medication.name,
+        );
+        if (!proceed) return; // User cancelled.
+      }
+    }
+
+    // ── Persist ──────────────────────────────────────────────────────────
     final controller = ref.read(cabinetControllerProvider.notifier);
     final bool success;
 
@@ -128,8 +153,8 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
           SnackBar(
             content: Text(
               widget.isEditing
-                  ? '${medication.name} updated successfully!'
-                  : '${medication.name} added to your cabinet!',
+                  ? l10n.medicationUpdatedSuccess(medication.name)
+                  : l10n.medicationAddedSuccess(medication.name),
             ),
             backgroundColor: Colors.green,
           ),
@@ -138,7 +163,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
         final errorState = ref.read(cabinetControllerProvider);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorState.error?.toString() ?? 'Operation failed.'),
+            content: Text(errorState.error?.toString() ?? l10n.errorGeneric),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -148,14 +173,15 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final state = ref.watch(cabinetControllerProvider);
     final isLoading = state.isLoading;
-    final dateFormat = DateFormat.yMMMMd();
+    final dateFormat = DateFormat.yMMMMd(Localizations.localeOf(context).languageCode);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.isEditing ? 'Edit Medication' : 'Add Medication'),
+        title: Text(widget.isEditing ? l10n.medicationEditTitle : l10n.medicationFormTitle),
         actions: [
           IconButton(
             icon: isLoading

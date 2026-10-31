@@ -1,0 +1,177 @@
+[
+  {
+    "ingredient_a": "warfarin",
+    "ingredient_b": "aspirin",
+    "severity": "major",
+    "summary": "Taking aspirin with warfarin significantly increases bleeding risk. Both drugs impair clotting by different mechanisms.",
+    "mechanism": "Pharmacodynamic synergy: antiplatelet + anticoagulant"
+  },
+  {
+    "ingredient_a": "warfarin",
+    "ingredient_b": "ibuprofen",
+    "severity": "major",
+    "summary": "NSAIDs like ibuprofen can raise warfarin levels in the blood and irritate the stomach lining, greatly increasing bleeding risk.",
+    "mechanism": "CYP2C9 inhibition and GI irritation"
+  },
+  {
+    "ingredient_a": "warfarin",
+    "ingredient_b": "naproxen",
+    "severity": "major",
+    "summary": "Naproxen combined with warfarin raises serious bleeding risk through both antiplatelet action and anticoagulant potentiation.",
+    "mechanism": "Pharmacodynamic synergy and CYP2C9 inhibition"
+  },
+  {
+    "ingredient_a": "warfarin",
+    "ingredient_b": "metronidazole",
+    "severity": "major",
+    "summary": "Metronidazole strongly inhibits the enzyme that breaks down warfarin, causing warfarin to accumulate and substantially increase bleeding risk.",
+    "mechanism": "CYP2C9 inhibition"
+  },
+  {
+    "ingredient_a": "simvastatin",
+    "ingredient_b": "amiodarone",
+    "severity": "major",
+    "summary": "Amiodarone slows the metabolism of simvastatin, leading to dangerously high statin levels that can damage muscle tissue (rhabdomyolysis).",
+    "mechanism": "CYP3A4 inhibition raising simvastatin exposure"
+  },
+  {
+    "ingredient_a": "simvastatin",
+    "ingredient_b": "clarithromycin",
+    "severity": "major",
+    "summary": "Clarithromycin dramatically raises simvastatin blood levels, sharply increasing the risk of serious muscle damage.",
+    "mechanism": "Strong CYP3A4 inhibition"
+  },
+  {
+    "ingredient_a": "clopidogrel",
+    "ingredient_b": "omeprazole",
+    "severity": "moderate",
+    "summary": "Omeprazole reduces the body's ability to convert clopidogrel into its active form, potentially weakening its blood-thinning effect.",
+    "mechanism": "CYP2C19 inhibition reducing active metabolite"
+  },
+  {
+    "ingredient_a": "metformin",
+    "ingredient_b": "alcohol",
+    "severity": "moderate",
+    "summary": "Heavy alcohol use with metformin raises the rare but serious risk of lactic acidosis, a dangerous build-up of lactic acid in the blood.",
+    "mechanism": "Additive lactic acidosis risk"
+  },
+  {
+    "ingredient_a": "lisinopril",
+    "ingredient_b": "potassium",
+    "severity": "moderate",
+    "summary": "ACE inhibitors like lisinopril already raise blood potassium. Adding potassium supplements can push levels dangerously high (hyperkalemia), affecting heart rhythm.",
+    "mechanism": "Additive hyperkalemia risk"
+  },
+  {
+    "ingredient_a": "lisinopril",
+    "ingredient_b": "spironolactone",
+    "severity": "moderate",
+    "summary": "Both drugs raise potassium levels. Used together, they can cause dangerously high potassium (hyperkalemia), especially in people with kidney problems.",
+    "mechanism": "Additive hyperkalemia"
+  },
+  {
+    "ingredient_a": "methotrexate",
+    "ingredient_b": "ibuprofen",
+    "severity": "major",
+    "summary": "NSAIDs reduce kidney elimination of methotrexate, causing toxic levels to accumulate and risking serious side effects to the bone marrow, liver, and kidneys.",
+    "mechanism": "Reduced renal clearance of methotrexate"
+  },
+  {
+    "ingredient_a": "methotrexate",
+    "ingredient_b": "naproxen",
+    "severity": "major",
+    "summary": "Like other NSAIDs, naproxen can cause methotrexate to build up to toxic concentrations in the body.",
+    "mechanism": "Reduced renal clearance of methotrexate"
+  },
+  {
+    "ingredient_a": "sildenafil",
+    "ingredient_b": "nitroglycerin",
+    "severity": "contraindicated",
+    "summary": "Combining these drugs causes a sudden, severe drop in blood pressure that can be life-threatening.",
+    "mechanism": "Excessive synergistic vasodilation"
+  },
+  {
+    "ingredient_a": "sildenafil",
+    "ingredient_b": "isosorbide",
+    "severity": "contraindicated",
+    "summary": "Both drugs relax blood vessels through complementary pathways; together they can cause a life-threatening crash in blood pressure.",
+    "mechanism": "Synergistic vasodilation leading to severe hypotension"
+  },
+  {
+    "ingredient_a": "ssri",
+    "ingredient_b": "tramadol",
+    "severity": "major",
+    "summary": "SSRIs combined with tramadol can trigger serotonin syndrome, a potentially life-threatening condition with symptoms such as agitation, rapid heart rate, and high temperature.",
+    "mechanism": "Serotonin syndrome risk"
+  },
+  {
+    "ingredient_a": "fluoxetine",
+    "ingredient_b": "tramadol",
+    "severity": "major",
+    "summary": "Fluoxetine with tramadol raises the risk of serotonin syndrome and can also block tramadol's pain-relieving effect.",
+    "mechanism": "Serotonin syndrome and CYP2D6 inhibition"
+  },
+  {
+    "ingredient_a": "sertraline",
+    "ingredient_b": "tramadol",
+    "severity": "major",
+    "summary": "Combining sertraline and tramadol substantially increases the risk of serotonin syndrome.",
+    "mechanism": "Serotonin syndrome risk"
+  },
+  {
+    "ingredient_a": "ciprofloxacin",
+    "ingredient_b": "antacid",
+    "severity": "moderate",
+    "summary": "Antacids containing calcium, magnesium, or aluminum bind to ciprofloxacin in the gut, drastically reducing how much antibiotic your body absorbs.",
+    "mechanism": "Chelation reducing ciprofloxacin absorption"
+  },
+  {
+    "ingredient_a": "levothyroxine",
+    "ingredient_b": "calcium carbonate",
+    "severity": "moderate",
+    "summary": "Calcium carbonate interferes with levothyroxine absorption from the gut. Separate these medications by at least 4 hours.",
+    "mechanism": "Impaired GI absorption"
+  },
+  {
+    "ingredient_a": "digoxin",
+    "ingredient_b": "amiodarone",
+    "severity": "major",
+    "summary": "Amiodarone raises digoxin blood levels and both drugs slow the heart; together they increase the risk of serious heart rhythm problems.",
+    "mechanism": "P-glycoprotein inhibition and additive bradycardia"
+  },
+  {
+    "ingredient_a": "atorvastatin",
+    "ingredient_b": "clarithromycin",
+    "severity": "major",
+    "summary": "Clarithromycin prevents the breakdown of atorvastatin, leading to dangerous drug build-up and increased risk of muscle damage.",
+    "mechanism": "CYP3A4 inhibition"
+  },
+  {
+    "ingredient_a": "alprazolam",
+    "ingredient_b": "alcohol",
+    "severity": "major",
+    "summary": "Alcohol intensifies the sedative effect of benzodiazepines like alprazolam, creating a dangerous level of central nervous system depression that can suppress breathing.",
+    "mechanism": "CNS depression synergy"
+  },
+  {
+    "ingredient_a": "diazepam",
+    "ingredient_b": "alcohol",
+    "severity": "major",
+    "summary": "Combining alcohol with diazepam creates powerful sedation and CNS depression, with risk of respiratory failure.",
+    "mechanism": "CNS depression synergy"
+  },
+  {
+    "ingredient_a": "lithium",
+    "ingredient_b": "ibuprofen",
+    "severity": "major",
+    "summary": "NSAIDs like ibuprofen reduce kidney clearance of lithium, causing lithium to build up to potentially toxic levels.",
+    "mechanism": "Reduced renal clearance of lithium"
+  },
+  {
+    "ingredient_a": "lithium",
+    "ingredient_b": "naproxen",
+    "severity": "major",
+    "summary": "Naproxen reduces kidney elimination of lithium, potentially causing lithium toxicity.",
+    "mechanism": "Reduced renal clearance of lithium"
+  }
+]

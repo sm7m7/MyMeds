@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.13.5
+  sdk: ^3.12.2
 
 dependencies:
   flutter:
@@ -46,8 +46,18 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   timezone: ^0.9.4
 
-  # Icons
+  # Data Visualization & Charts
+  fl_chart: ^0.69.0
+
+  # Icons and other features
   cupertino_icons: ^1.0.8
+  geolocator: ^14.1.1
+  url_launcher: ^6.3.3
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+  pdf: ^3.13.1
+  printing: ^5.15.1
+  share_plus: ^13.3.1
 
 dev_dependencies:
   flutter_test:
@@ -61,3 +71,4 @@ flutter:
 
   assets:
     - .env
+    - assets/interactions/

@@ -1,7 +1,35 @@
 {
   "@@locale": "en",
+
   "appTitle": "MyMeds",
   "@appTitle": { "description": "The application title" },
+
+  "appVersion": "Version {version}",
+  "@appVersion": {
+    "description": "Version string shown in About",
+    "placeholders": { "version": { "type": "String" } }
+  },
+
+  "medicalDisclaimer": "Informational only. Consult a healthcare professional.",
+  "@medicalDisclaimer": { "description": "Mandatory medical disclaimer" },
+
+  "consultDoctorOrPharmacist": "Consult a doctor or pharmacist.",
+  "@consultDoctorOrPharmacist": { "description": "Drug interaction call-to-action" },
+
+  "ok": "OK",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "add": "Add",
+  "confirm": "Confirm",
+  "close": "Close",
+  "retry": "Retry",
+  "loading": "Loading…",
+  "error": "Error",
+  "errorGeneric": "Something went wrong. Please try again.",
+  "noDataYet": "No data yet.",
+
   "tabCabinet": "Cabinet",
   "@tabCabinet": { "description": "Bottom nav tab: Cabinet" },
   "tabSearch": "Search",
@@ -12,15 +40,6 @@
   "@tabDashboard": { "description": "Bottom nav tab: Dashboard" },
   "tabMore": "More",
   "@tabMore": { "description": "Bottom nav tab: More" },
-  "medicalDisclaimer": "Informational only. Consult a healthcare professional.",
-  "@medicalDisclaimer": { "description": "Medical disclaimer shown on every medical screen" },
-  "cabinetEmpty": "Your medication cabinet will appear here.",
-  "searchHint": "Search for medications here.",
-  "remindersEmpty": "Your medication reminders will appear here.",
-  "dashboardEmpty": "Your health dashboard will appear here.",
-  "settings": "Settings",
-  "language": "Language",
-  "about": "About",
 
   "loginTitle": "Welcome to MyMeds",
   "loginSubtitle": "Sign in to manage your medication schedule safely",
@@ -49,12 +68,15 @@
   "resetEmailSent": "Password reset email sent! Check your inbox.",
   "profile": "Profile",
   "logout": "Log Out",
+  "logoutConfirmTitle": "Log Out",
   "logoutConfirmation": "Are you sure you want to log out of MyMeds?",
-  "cancel": "Cancel",
   "deleteAccount": "Delete Account",
+  "deleteAccountTitle": "Delete Account?",
   "deleteAccountConfirmation": "Are you sure you want to permanently delete your account and all associated medication data? This action cannot be undone.",
   "deleteAccountWarning": "This will permanently remove your account and all your saved medication data from Firestore.",
+  "deletePermanently": "Delete Permanently",
   "accountDeletedSuccess": "Your account has been deleted.",
+
   "errorEmailRequired": "Please enter an email address",
   "errorInvalidEmail": "Please enter a valid email address",
   "errorPasswordRequired": "Please enter a password",
@@ -67,5 +89,331 @@
   "errorInvalidCredential": "The provided credentials are invalid or expired.",
   "errorWeakPassword": "The password is too weak. Please use a stronger password.",
   "errorNetworkFailed": "Network error. Please check your internet connection.",
-  "errorTooManyRequests": "Too many failed attempts. Please try again later."
+  "errorTooManyRequests": "Too many failed attempts. Please try again later.",
+
+  "settings": "Settings",
+  "settingsPreferences": "Preferences",
+  "settingsAccount": "Account",
+  "settingsStockThresholds": "Stock & Expiration Thresholds",
+  "settingsAbout": "About",
+  "language": "Language",
+  "languagePickerTitle": "Choose Language",
+  "languageEnglish": "English",
+  "languageFrench": "Français",
+  "languageArabic": "العربية",
+  "about": "About",
+  "notLoggedIn": "Not logged in",
+  "deleteFirestoreData": "Permanently remove user & Firestore data",
+
+  "expiringThresholdTitle": "Expiring Soon Threshold",
+  "expiringThresholdSubtitle": "Flag medications expiring within {days} days",
+  "@expiringThresholdSubtitle": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "lowStockThresholdTitle": "Low Stock Threshold",
+  "lowStockThresholdSubtitle": "Flag when quantity is {units} units or fewer",
+  "@lowStockThresholdSubtitle": {
+    "placeholders": { "units": { "type": "int" } }
+  },
+  "autoDecrementTitle": "Auto-decrement stock on dose taken",
+  "autoDecrementSubtitle": "Deduct 1 unit from cabinet inventory automatically when marking a dose Taken",
+  "dailyAlertsTitle": "Daily stock & expiry alerts",
+  "dailyAlertsSubtitle": "Receive daily notifications summarizing items needing attention",
+  "days7": "7d",
+  "days90": "90d",
+  "unit1": "1 unit",
+  "units20": "20 units",
+
+  "cabinetTitle": "Cabinet",
+  "cabinetEmpty": "Your medication cabinet is empty.",
+  "cabinetEmptySubtitle": "Tap + to add your first medication.",
+  "cabinetAddMedication": "Add Medication",
+  "cabinetAddFirst": "Add your first medication",
+  "cabinetSearchHint": "Search medications…",
+  "cabinetFilterAll": "All",
+  "cabinetFilterForm": "Filter by form",
+  "cabinetFilterStatus": "Filter by status",
+  "cabinetTotalItems": "{count} items",
+  "@cabinetTotalItems": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "cabinetExpiredCount": "{count} expired",
+  "@cabinetExpiredCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "cabinetExpiringCount": "{count} expiring",
+  "@cabinetExpiringCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "medicationFormTitle": "Add Medication",
+  "medicationEditTitle": "Edit Medication",
+  "medicationName": "Medication Name",
+  "medicationNameHint": "e.g. Amoxicillin, Advil",
+  "medicationNameRequired": "Medication name is required",
+  "medicationDosage": "Dosage / Strength",
+  "medicationDosageHint": "e.g. 500 mg, 10 ml",
+  "medicationDosageRequired": "Dosage is required",
+  "medicationForm": "Formulation Form",
+  "medicationQuantity": "Quantity in Stock (Units)",
+  "medicationQuantityHint": "e.g. 30",
+  "medicationQuantityRequired": "Quantity is required",
+  "medicationQuantityInvalid": "Enter a valid positive number",
+  "medicationExpirationDate": "Expiration Date",
+  "medicationStorage": "Storage Conditions (Optional)",
+  "medicationStorageHint": "e.g. Store in a cool dry place, below 25°C",
+  "medicationNotes": "Notes / Instructions (Optional)",
+  "medicationNotesHint": "e.g. Take with food, prescribed by Dr. Smith",
+  "medicationSaveButton": "Add to Medicine Cabinet",
+  "medicationUpdateButton": "Update Medication",
+  "medicationAddedSuccess": "{name} added to your cabinet!",
+  "@medicationAddedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "medicationUpdatedSuccess": "{name} updated successfully!",
+  "@medicationUpdatedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "medicationDeleteTitle": "Delete Medication?",
+  "medicationDeleteConfirm": "Are you sure you want to remove {name} from your cabinet? This action cannot be undone.",
+  "@medicationDeleteConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "medicationDeleteSuccess": "{name} removed from your cabinet.",
+  "@medicationDeleteSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "statusOk": "OK",
+  "statusExpired": "Expired",
+  "statusExpiringSoon": "Expiring Soon",
+  "statusLowStock": "Low Stock",
+  "expiresOn": "Expires {date}",
+  "@expiresOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "expiresInDays": "Expires in {days} days",
+  "@expiresInDays": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "expiredDaysAgo": "Expired {days} days ago",
+  "@expiredDaysAgo": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "stockUnitsRemaining": "{units} units remaining",
+  "@stockUnitsRemaining": {
+    "placeholders": { "units": { "type": "int" } }
+  },
+
+  "searchTitle": "Search",
+  "searchHint": "Search medications…",
+  "searchEmpty": "Search for a medication to get started.",
+  "searchNoResults": "No results for \"{query}\"",
+  "@searchNoResults": {
+    "placeholders": { "query": { "type": "String" } }
+  },
+  "searchResultsCount": "{count} results",
+  "@searchResultsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "searchOffline": "You appear to be offline. Showing cached results.",
+  "addToCabinet": "Add to My Cabinet",
+  "medicationDetailTitle": "Medication Detail",
+  "medicationPurpose": "Purpose / Indication",
+  "medicationDosageInfo": "Dosage Information",
+  "medicationStorageInfo": "Storage",
+  "medicationWarnings": "Warnings",
+
+  "remindersTitle": "Reminders",
+  "remindersEmpty": "No reminders yet.",
+  "remindersEmptySubtitle": "Tap + to schedule a medication reminder.",
+  "reminderAddTitle": "Add Reminder",
+  "reminderEditTitle": "Edit Reminder",
+  "reminderFrequencyLabel": "Frequency",
+  "reminderFrequencyDaily": "Daily",
+  "reminderFrequencyEveryXHours": "Every {hours} hours",
+  "@reminderFrequencyEveryXHours": {
+    "placeholders": { "hours": { "type": "int" } }
+  },
+  "reminderFrequencyWeekdays": "Specific weekdays",
+  "reminderStartDate": "Start Date",
+  "reminderDuration": "Duration (days)",
+  "reminderActive": "Active",
+  "reminderTimes": "Reminder Times",
+  "reminderMedicationLabel": "Select Medication",
+  "reminderSaveSuccess": "Reminder saved.",
+  "reminderDeleteConfirm": "Delete this reminder?",
+  "reminderDeleteSuccess": "Reminder deleted.",
+  "reminderTodayTitle": "Today",
+  "reminderUpcoming": "Upcoming",
+  "reminderPast": "Past",
+  "doseActionTaken": "Taken",
+  "doseActionSkip": "Skip",
+  "doseActionMissed": "Missed",
+  "doseActionPending": "Pending",
+  "doseNoScheduleToday": "No doses scheduled for today.",
+
+  "notificationDoseDue": "Time to take {medication} ({dosage})",
+  "@notificationDoseDue": {
+    "description": "Push/local notification body for a due dose",
+    "placeholders": {
+      "medication": { "type": "String" },
+      "dosage": { "type": "String" }
+    }
+  },
+  "notificationDoseDueTitle": "Dose Due",
+  "notificationStockAlertTitle": "Medication Attention Needed",
+  "notificationStockAlertBody": "{count} medication(s) need your attention.",
+  "@notificationStockAlertBody": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "notificationExpiredItem": "{name} has expired.",
+  "@notificationExpiredItem": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "notificationExpiringItem": "{name} expires soon.",
+  "@notificationExpiringItem": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "notificationLowStockItem": "{name} is running low ({units} left).",
+  "@notificationLowStockItem": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "units": { "type": "int" }
+    }
+  },
+
+  "dashboardTitle": "Dashboard",
+  "dashboardSubtitle": "Health & Medication Summary",
+  "dashboardTotalItems": "Total Items",
+  "dashboardExpired": "Expired",
+  "dashboardExpiringSoon": "Expiring Soon",
+  "dashboardLowStock": "Low Stock",
+  "dashboardTodaySchedule": "Today's Medication Schedule",
+  "dashboardViewAll": "View All",
+  "dashboardHistory": "History",
+  "dashboardNoScheduleToday": "No doses scheduled for today.",
+
+  "adherenceTitle": "Adherence",
+  "adherenceOverview": "Adherence Overview",
+  "adherencePeriodWeek": "Last 7 Days",
+  "adherencePeriodMonth": "Last 30 Days",
+  "adherencePeriodWeekShort": "Week",
+  "adherencePeriodMonthShort": "Month",
+  "adherenceRate": "Adherence Rate",
+  "adherenceScheduled": "Scheduled",
+  "adherenceTaken": "Taken",
+  "adherenceMissed": "Missed",
+  "adherenceSkipped": "Skipped",
+  "adherenceNoData": "No recorded doses for this period.",
+  "adherenceDailyActivity": "Daily Intake Activity",
+  "adherenceMedicationBreakdown": "Medication Breakdown",
+  "adherenceNoBreakdown": "No medication adherence data available.",
+  "adherenceNoActivityDays": "No dose activity logged for these days.",
+  "adherenceDosesTaken": "{taken}/{scheduled} doses taken",
+  "@adherenceDosesTaken": {
+    "placeholders": {
+      "taken": { "type": "int" },
+      "scheduled": { "type": "int" }
+    }
+  },
+  "adherenceMissedSkipped": "{missed} missed · {skipped} skipped",
+  "@adherenceMissedSkipped": {
+    "placeholders": {
+      "missed": { "type": "int" },
+      "skipped": { "type": "int" }
+    }
+  },
+  "adherenceOutstanding": "Outstanding Adherence! 🌟",
+  "adherenceGreat": "Great Consistency! 👍",
+  "adherenceModerate": "Moderate Adherence ⚠️",
+  "adherenceLow": "Action Needed — Low Adherence 🚨",
+  "adherenceSummaryDetail": "{taken} of {scheduled} scheduled doses taken on time.",
+  "@adherenceSummaryDetail": {
+    "placeholders": {
+      "taken": { "type": "int" },
+      "scheduled": { "type": "int" }
+    }
+  },
+
+  "doseHistoryTitle": "Dose History",
+  "doseHistoryDays7": "7 Days",
+  "doseHistoryDays30": "30 Days",
+  "doseHistoryAllMeds": "All Meds",
+  "doseHistoryAllStatuses": "All Statuses",
+  "doseHistoryEmpty": "No dose records found",
+  "doseHistoryEmptySubtitle": "Try adjusting the date range or filter options.",
+  "doseLoggedAt": "Logged at {time}",
+  "@doseLoggedAt": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+
+  "attentionNeededTitle": "Attention Needed",
+  "attentionNoItems": "All medications are in good standing.",
+  "actionUpdateQuantity": "Update Quantity",
+  "actionMarkDisposed": "Mark Disposed",
+
+  "interactionsTitle": "Drug Interactions",
+  "interactionsFound": "{count} found",
+  "@interactionsFound": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "interactionsConsultCTA": "Always consult a doctor or pharmacist before changing your medication regimen.",
+  "interactionsNoneFound": "No interactions detected",
+  "interactionsNoneFoundFilter": "No {severity} interactions",
+  "@interactionsNoneFoundFilter": {
+    "placeholders": { "severity": { "type": "String" } }
+  },
+  "interactionsNoneFoundDetail": "No known interactions were found among the medications in your cabinet. Always check with your pharmacist when adding new medications.",
+  "interactionsMayInteract": "{name} may interact with:",
+  "@interactionsMayInteract": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "interactionDetailTitle": "Interaction Detail",
+  "interactionMedications": "Medications Involved",
+  "interactionWhatItMeans": "What This Means",
+  "interactionMechanism": "Pharmacological Mechanism",
+  "interactionSaveAnyway": "Save Anyway",
+  "interactionWarningTitle": "Possible Drug Interactions",
+  "interactionConsultWarning": "Informational only. Consult a doctor or pharmacist before making any changes to your medications.",
+  "interactionActiveIngredients": "Active ingredients: {a} ↔ {b}",
+  "@interactionActiveIngredients": {
+    "placeholders": {
+      "a": { "type": "String" },
+      "b": { "type": "String" }
+    }
+  },
+  "interactionMechanismLabel": "Mechanism: {mechanism}",
+  "@interactionMechanismLabel": {
+    "placeholders": { "mechanism": { "type": "String" } }
+  },
+  "interactionSeverityMajor": "Major",
+  "interactionSeverityModerate": "Moderate",
+  "interactionSeverityContraindicated": "Contraindicated",
+  "interactionNeverGiveDiagnosis": "This information is for awareness only. Never stop, start, or change a medication without professional guidance.",
+  "interactionConsultCTATitle": "Consult a doctor or pharmacist.",
+
+  "labelReaderTitle": "Scan Medication Label",
+  "labelReaderCapture": "Capture Photo",
+  "labelReaderGallery": "Choose from Gallery",
+  "labelReaderScanning": "Scanning…",
+  "labelReaderAnalyzing": "Analysing with AI…",
+  "labelReaderConfirmTitle": "Confirm Extracted Data",
+  "labelReaderLowConfidence": "Low confidence — please verify",
+  "labelReaderNoText": "No text found in image.",
+  "labelReaderBlurry": "Image may be blurry. Try capturing again.",
+  "labelReaderFallback": "Can't read it? Search manually.",
+  "labelReaderDisclaimer": "Extracted data must be verified by you before saving.",
+  "labelReaderSaveToCalinet": "Save to Cabinet",
+
+  "moreTitle": "More",
+  "moreInteractions": "Drug Interactions",
+  "moreScan": "Scan Label",
+
+  "searchHintText": "Search for medications here.",
+  "remindersEmptyText": "Your medication reminders will appear here.",
+  "dashboardEmptyText": "Your health dashboard will appear here.",
+
+  "uid": "UID",
+  "notAvailable": "N/A"
 }

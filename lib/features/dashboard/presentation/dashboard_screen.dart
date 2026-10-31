@@ -4,14 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:my_meds/core/router/router.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
+import 'package:my_meds/features/adherence/presentation/providers/adherence_providers.dart';
+import 'package:my_meds/features/adherence/presentation/widgets/adherence_bar_chart.dart';
+import 'package:my_meds/features/adherence/presentation/widgets/adherence_summary_card.dart';
+import 'package:my_meds/features/adherence/presentation/widgets/per_medication_adherence_list.dart';
 import 'package:my_meds/features/cabinet/presentation/providers/cabinet_providers.dart';
 import 'package:my_meds/features/cabinet/presentation/widgets/attention_needed_section.dart';
 import 'package:my_meds/features/reminders/presentation/providers/reminders_providers.dart';
 import 'package:my_meds/features/reminders/presentation/widgets/dose_occurrence_card.dart';
 import 'package:my_meds/features/settings/presentation/providers/inventory_settings_providers.dart';
 
-/// Health Dashboard screen providing high-level inventory analytics, attention-needed items,
-/// and today's dose schedule.
+/// Health Dashboard screen providing adherence analytics, inventory status,
+/// attention-needed items, and today's dose schedule.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -36,6 +40,11 @@ class DashboardScreen extends ConsumerWidget {
         title: const Text('Dashboard'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.history_rounded),
+            tooltip: 'Dose History',
+            onPressed: () => context.push(AppRoutes.doseHistory),
+          ),
+          IconButton(
             icon: const Icon(Icons.settings_outlined),
             tooltip: 'Settings & Thresholds',
             onPressed: () => context.push(AppRoutes.settings),
@@ -47,6 +56,7 @@ class DashboardScreen extends ConsumerWidget {
           ref.invalidate(cabinetMedicationsStreamProvider);
           ref.invalidate(todayDoseLogsStreamProvider);
           ref.invalidate(userRemindersStreamProvider);
+          ref.invalidate(adherenceLogsRangeProvider);
         },
         child: ListView(
           padding: const EdgeInsets.only(bottom: 32),
@@ -140,16 +150,64 @@ class DashboardScreen extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
+
+            // Adherence Analytics Section
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.analytics_outlined, color: theme.colorScheme.primary, size: 22),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Medication Adherence',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  TextButton.icon(
+                    icon: const Icon(Icons.history_rounded, size: 18),
+                    label: const Text('History'),
+                    onPressed: () => context.push(AppRoutes.doseHistory),
+                  ),
+                ],
+              ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: AdherenceSummaryCard(),
+            ),
+
+            const SizedBox(height: 12),
+
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: AdherenceBarChart(),
+            ),
+
+            const SizedBox(height: 12),
+
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: PerMedicationAdherenceList(),
+            ),
+
+            const SizedBox(height: 16),
 
             // Attention Needed Section (Expired, Expiring Soon, Low Stock)
             const AttentionNeededSection(showHeader: true),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
 
             // Today's Doses Header & Preview
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

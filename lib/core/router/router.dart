@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:my_meds/core/widgets/bottom_nav_shell.dart';
+import 'package:my_meds/features/adherence/presentation/screens/dose_history_screen.dart';
 import 'package:my_meds/features/auth/presentation/providers/auth_provider.dart';
 import 'package:my_meds/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:my_meds/features/auth/presentation/screens/login_screen.dart';
@@ -15,6 +16,9 @@ import 'package:my_meds/features/label_reader/presentation/screens/label_camera_
 import 'package:my_meds/features/more/presentation/more_screen.dart';
 import 'package:my_meds/features/reminders/presentation/screens/reminders_screen.dart';
 import 'package:my_meds/features/search/presentation/search_screen.dart';
+import 'package:my_meds/features/emergency/presentation/screens/emergency_card_screen.dart';
+import 'package:my_meds/features/interactions/presentation/screens/interactions_screen.dart';
+import 'package:my_meds/features/locator/presentation/screens/locator_screen.dart';
 import 'package:my_meds/features/settings/presentation/screens/settings_screen.dart';
 
 /// Navigation route constants.
@@ -33,6 +37,10 @@ class AppRoutes {
   static const String more = '/more';
   static const String settings = '/settings';
   static const String scan = '/scan';
+  static const String doseHistory = '/dose-history';
+  static const String interactions = '/interactions';
+  static const String locator = '/locator';
+  static const String emergencyCard = '/emergency-card';
 }
 
 /// Navigator keys.
@@ -43,7 +51,7 @@ final _remindersNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'reminders'
 final _dashboardNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'dashboard');
 final _moreNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'more');
 
-/// Listenable adapter that triggers GoRouter redirect when a Riverpod stream changes.
+/// Listenable adapter that triggers GoRouter redirect when a stream changes.
 class _GoRouterRefreshStream extends ChangeNotifier {
   _GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
@@ -62,27 +70,28 @@ class _GoRouterRefreshStream extends ChangeNotifier {
 /// Provider for the application [GoRouter] with authentication redirect guards.
 final routerProvider = Provider<GoRouter>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
+  final refresh = _GoRouterRefreshStream(authRepository.authStateChanges());
+  ref.onDispose(refresh.dispose);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.splash,
-    refreshListenable: _GoRouterRefreshStream(authRepository.authStateChanges()),
+    refreshListenable: refresh,
     redirect: (context, state) {
       final user = authRepository.currentUser;
       final location = state.uri.path;
 
       final isAuthRoute = location == AppRoutes.login ||
           location == AppRoutes.register ||
-          location == AppRoutes.forgotPassword ||
-          location == AppRoutes.splash;
+          location == AppRoutes.forgotPassword;
 
-      // Unauthenticated users trying to access protected screens -> redirect to login
+      // Logged out: splash and protected routes go to login.
       if (user == null) {
         return isAuthRoute ? null : AppRoutes.login;
       }
 
-      // Authenticated users on splash or auth screens -> redirect to main cabinet
-      if (isAuthRoute) {
+      // Logged in: splash and auth routes go to the cabinet.
+      if (isAuthRoute || location == AppRoutes.splash) {
         return AppRoutes.cabinet;
       }
 
@@ -113,6 +122,22 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.scan,
         builder: (context, state) => const LabelCameraScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.doseHistory,
+        builder: (context, state) => const DoseHistoryScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.interactions,
+        builder: (context, state) => const InteractionsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.locator,
+        builder: (context, state) => const LocatorScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.emergencyCard,
+        builder: (context, state) => const EmergencyCardScreen(),
       ),
 
       // ── Main Shell (Bottom Navigation) ──

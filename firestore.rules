@@ -18,6 +18,11 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if isOwner(userId);
 
+      // Emergency card data: strictly restricted to document owner
+      match /emergencyCard/{document} {
+        allow read, write: if isOwner(userId);
+      }
+
       // All subcollections under the user's document (e.g. medications, reminders, logs)
       match /{subcollection=**} {
         allow read, write: if isOwner(userId);

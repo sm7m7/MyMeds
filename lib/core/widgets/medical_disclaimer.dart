@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_meds/core/constants/constants.dart';
+import 'package:my_meds/l10n/app_localizations.dart';
 
 /// A reusable medical disclaimer banner.
 ///
+/// Text comes from [AppLocalizations] so it is fully localized.
 /// Must be displayed on every medical/informational screen.
 class MedicalDisclaimer extends StatelessWidget {
   const MedicalDisclaimer({super.key});
@@ -10,6 +11,8 @@ class MedicalDisclaimer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -27,7 +30,7 @@ class MedicalDisclaimer extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              AppConstants.medicalDisclaimer,
+              l10n.medicalDisclaimer,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onTertiaryContainer,
                 fontWeight: FontWeight.w500,

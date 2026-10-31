@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-// Uncomment the lines below after running `flutterfire configure`:
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:my_meds/core/config/firebase_options_placeholder.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:my_meds/app.dart';
+import 'package:my_meds/core/config/env_config.dart';
+import 'package:my_meds/core/config/firebase_options_placeholder.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  debugPrint('CHECKPOINT 1: binding ok');
 
-  // ── Load environment variables ──
-  await dotenv.load(fileName: '.env');
+  await EnvConfig.init();
+  debugPrint('CHECKPOINT 2: env ok, projectId=${EnvConfig.firebaseProjectId}');
 
-  // ── Initialize Firebase ──
-  // Uncomment after running `flutterfire configure`:
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  debugPrint('CHECKPOINT 3: firebase ok');
 
-  // ── Launch app with Riverpod ──
-  runApp(
-    const ProviderScope(
-      child: MyMedsApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyMedsApp()));
+  debugPrint('CHECKPOINT 4: runApp called');
 }

@@ -12,19 +12,15 @@
 //   3. Replace this file with the generated `firebase_options.dart`.
 //
 // NEVER hardcode API keys. Use --dart-define or .env for secrets.
-// =============================================================================
-
+// ==========================================================================
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+import 'package:my_meds/core/config/env_config.dart'; // adapte le chemin vers ton EnvConfig
 
-/// Placeholder Firebase options.
-///
-/// Replace with the output of `flutterfire configure`.
 class DefaultFirebaseOptions {
-  static FirebaseOptions get currentPlatform {
-    // TODO: Replace with real FirebaseOptions after running flutterfire configure.
-    throw UnsupportedError(
-      'DefaultFirebaseOptions have not been configured for this platform. '
-      'Run `flutterfire configure` to generate firebase_options.dart.',
-    );
-  }
+  static FirebaseOptions get currentPlatform => FirebaseOptions(
+    apiKey: EnvConfig.firebaseApiKey,
+    appId: EnvConfig.firebaseAppId,
+    messagingSenderId: EnvConfig.firebaseMessagingSenderId,
+    projectId: EnvConfig.firebaseProjectId,
+  );
 }
