@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication_form.dart';
+import 'package:my_meds/features/cabinet/presentation/widgets/medication_photo.dart';
 import 'package:my_meds/features/cabinet/presentation/widgets/medication_status_badge.dart';
 
 /// Interactive card tile representing a medication in the user's cabinet list.
@@ -37,6 +38,8 @@ class CabinetMedicationTile extends StatelessWidget {
     final allStatuses = medication.getAllStatuses();
     final dateFormat = DateFormat.yMMMd();
     final daysRemaining = medication.daysUntilExpiration();
+    final hasPhoto =
+        medication.photoBase64 != null && medication.photoBase64!.isNotEmpty;
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
@@ -51,22 +54,28 @@ class CabinetMedicationTile extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Form icon container
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: primaryStatus.backgroundColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: primaryStatus.color.withValues(alpha: 0.2),
+                  // Photo, or form icon container as fallback
+                  if (hasPhoto)
+                    MedicationPhotoView(
+                      photoBase64: medication.photoBase64,
+                      size: 56,
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: primaryStatus.backgroundColor,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: primaryStatus.color.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Icon(
+                        _getFormIcon(medication.form),
+                        color: primaryStatus.color,
+                        size: 24,
                       ),
                     ),
-                    child: Icon(
-                      _getFormIcon(medication.form),
-                      color: primaryStatus.color,
-                      size: 24,
-                    ),
-                  ),
                   const SizedBox(width: 14),
 
                   // Medication Name & Dosage
@@ -84,7 +93,9 @@ class CabinetMedicationTile extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '${medication.dosage} • ${medication.form.displayName}',
+                          medication.dosage.isEmpty
+                              ? medication.form.displayName
+                              : '${medication.dosage} • ${medication.form.displayName}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.outline,
                           ),
@@ -137,26 +148,26 @@ class CabinetMedicationTile extends StatelessWidget {
                         color: medication.isExpired()
                             ? theme.colorScheme.error
                             : (medication.isExpiringSoon()
-                                ? Colors.orange[800]
-                                : theme.colorScheme.outline),
+                            ? Colors.orange[800]
+                            : theme.colorScheme.outline),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         medication.isExpired()
                             ? 'Expired ${dateFormat.format(medication.expirationDate)}'
                             : (medication.isExpiringSoon()
-                                ? 'Exp: ${dateFormat.format(medication.expirationDate)} (${daysRemaining}d)'
-                                : 'Exp: ${dateFormat.format(medication.expirationDate)}'),
+                            ? 'Exp: ${dateFormat.format(medication.expirationDate)} (${daysRemaining}d)'
+                            : 'Exp: ${dateFormat.format(medication.expirationDate)}'),
                         style: theme.textTheme.bodySmall?.copyWith(
                           fontWeight: (medication.isExpired() ||
-                                  medication.isExpiringSoon())
+                              medication.isExpiringSoon())
                               ? FontWeight.bold
                               : FontWeight.normal,
                           color: medication.isExpired()
                               ? theme.colorScheme.error
                               : (medication.isExpiringSoon()
-                                  ? Colors.orange[800]
-                                  : theme.colorScheme.outline),
+                              ? Colors.orange[800]
+                              : theme.colorScheme.outline),
                         ),
                       ),
                     ],

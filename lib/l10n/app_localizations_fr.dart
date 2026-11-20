@@ -68,7 +68,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tabCabinet => 'Armoire';
 
   @override
-  String get tabSearch => 'Recherche';
+  String get tabSearch => 'Rendez-vous';
 
   @override
   String get tabReminders => 'Rappels';

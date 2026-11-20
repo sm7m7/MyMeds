@@ -12,6 +12,7 @@ class Medication {
     required this.expirationDate,
     this.storageConditions,
     this.notes,
+    this.photoBase64,
     required this.createdAt,
     this.updatedAt,
   });
@@ -24,6 +25,10 @@ class Medication {
   final DateTime expirationDate;
   final String? storageConditions;
   final String? notes;
+
+  /// Medication photo, resized and stored as a base64 string (null if none).
+  final String? photoBase64;
+
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -133,6 +138,7 @@ class Medication {
       expirationDate: parseDate(json['expirationDate']),
       storageConditions: json['storageConditions'] as String?,
       notes: json['notes'] as String?,
+      photoBase64: json['photoBase64'] as String?,
       createdAt: parseDate(json['createdAt']),
       updatedAt: json['updatedAt'] != null ? parseDate(json['updatedAt']) : null,
     );
@@ -149,12 +155,15 @@ class Medication {
       'expirationDate': expirationDate.toIso8601String(),
       'storageConditions': storageConditions,
       'notes': notes,
+      'photoBase64': photoBase64,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
   /// Creates a modified copy of this [Medication].
+  ///
+  /// Pass [clearPhoto] = true to remove the photo.
   Medication copyWith({
     String? id,
     String? name,
@@ -164,6 +173,8 @@ class Medication {
     DateTime? expirationDate,
     String? storageConditions,
     String? notes,
+    String? photoBase64,
+    bool clearPhoto = false,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -176,6 +187,7 @@ class Medication {
       expirationDate: expirationDate ?? this.expirationDate,
       storageConditions: storageConditions ?? this.storageConditions,
       notes: notes ?? this.notes,
+      photoBase64: clearPhoto ? null : (photoBase64 ?? this.photoBase64),
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -184,14 +196,14 @@ class Medication {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Medication &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          name == other.name &&
-          dosage == other.dosage &&
-          form == other.form &&
-          quantity == other.quantity &&
-          expirationDate.isAtSameMomentAs(other.expirationDate);
+          other is Medication &&
+              runtimeType == other.runtimeType &&
+              id == other.id &&
+              name == other.name &&
+              dosage == other.dosage &&
+              form == other.form &&
+              quantity == other.quantity &&
+              expirationDate.isAtSameMomentAs(other.expirationDate);
 
   @override
   int get hashCode =>

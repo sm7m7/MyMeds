@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:my_meds/core/theme/theme.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication_form.dart';
 import 'package:my_meds/features/cabinet/presentation/providers/cabinet_providers.dart';
+import 'package:my_meds/features/cabinet/presentation/widgets/medication_photo.dart';
 import 'package:my_meds/features/interactions/presentation/providers/interaction_providers.dart';
 import 'package:my_meds/features/interactions/presentation/widgets/interaction_warning_dialog.dart';
 import 'package:my_meds/l10n/app_localizations.dart';
@@ -43,6 +45,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
 
   late MedicationForm _selectedForm;
   late DateTime _selectedExpirationDate;
+  String? _photoBase64;
 
   @override
   void initState() {
@@ -67,6 +70,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
     _selectedForm = med?.form ?? MedicationForm.tablet;
     _selectedExpirationDate =
         med?.expirationDate ?? DateTime.now().add(const Duration(days: 180));
+    _photoBase64 = med?.photoBase64;
   }
 
   @override
@@ -112,6 +116,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
       notes: _notesController.text.trim().isNotEmpty
           ? _notesController.text.trim()
           : null,
+      photoBase64: _photoBase64,
       createdAt: widget.medicationToEdit?.createdAt ?? DateTime.now(),
       updatedAt: widget.isEditing ? DateTime.now() : null,
     );
@@ -156,7 +161,7 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
                   ? l10n.medicationUpdatedSuccess(medication.name)
                   : l10n.medicationAddedSuccess(medication.name),
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.blue,
           ),
         );
       } else {
@@ -186,10 +191,10 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
           IconButton(
             icon: isLoading
                 ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
                 : const Icon(Icons.check),
             onPressed: isLoading ? null : _handleSave,
           ),
@@ -204,6 +209,13 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const MedicalDisclaimer(),
+                const SizedBox(height: 20),
+
+                // Medication Photo
+                MedicationPhotoPicker(
+                  photoBase64: _photoBase64,
+                  onChanged: (value) => setState(() => _photoBase64 = value),
+                ),
                 const SizedBox(height: 20),
 
                 // Medication Name
@@ -221,18 +233,15 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Dosage & Strength
+                // Dosage & Strength (optional)
                 TextFormField(
                   controller: _dosageController,
                   enabled: !isLoading,
                   decoration: const InputDecoration(
-                    labelText: 'Dosage / Strength *',
+                    labelText: 'Dosage / Strength (Optional)',
                     hintText: 'e.g. 500 mg, 10 ml',
                     prefixIcon: Icon(Icons.healing_outlined),
                   ),
-                  validator: (val) => val == null || val.trim().isEmpty
-                      ? 'Dosage is required'
-                      : null,
                 ),
                 const SizedBox(height: 16),
 
@@ -252,10 +261,10 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
                   onChanged: isLoading
                       ? null
                       : (form) {
-                          if (form != null) {
-                            setState(() => _selectedForm = form);
-                          }
-                        },
+                    if (form != null) {
+                      setState(() => _selectedForm = form);
+                    }
+                  },
                 ),
                 const SizedBox(height: 16),
 
@@ -331,13 +340,13 @@ class _MedicationFormScreenState extends ConsumerState<MedicationFormScreen> {
                   onPressed: isLoading ? null : _handleSave,
                   icon: isLoading
                       ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Colors.white,
+                    ),
+                  )
                       : const Icon(Icons.save_outlined),
                   label: Text(
                     widget.isEditing

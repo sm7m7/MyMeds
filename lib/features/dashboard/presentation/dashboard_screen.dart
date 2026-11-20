@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:my_meds/core/router/router.dart';
+import 'package:my_meds/core/theme/theme.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/adherence/presentation/providers/adherence_providers.dart';
 import 'package:my_meds/features/adherence/presentation/widgets/adherence_bar_chart.dart';
@@ -11,11 +10,10 @@ import 'package:my_meds/features/adherence/presentation/widgets/per_medication_a
 import 'package:my_meds/features/cabinet/presentation/providers/cabinet_providers.dart';
 import 'package:my_meds/features/cabinet/presentation/widgets/attention_needed_section.dart';
 import 'package:my_meds/features/reminders/presentation/providers/reminders_providers.dart';
-import 'package:my_meds/features/reminders/presentation/widgets/dose_occurrence_card.dart';
 import 'package:my_meds/features/settings/presentation/providers/inventory_settings_providers.dart';
 
 /// Health Dashboard screen providing adherence analytics, inventory status,
-/// attention-needed items, and today's dose schedule.
+/// and attention-needed items.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -23,7 +21,6 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final medicationsAsync = ref.watch(cabinetMedicationsStreamProvider);
-    final todayOccurrencesAsync = ref.watch(todayOccurrencesProvider);
     final stockService = ref.watch(stockExpirationServiceProvider);
     final settings = ref.watch(inventorySettingsProvider);
 
@@ -38,18 +35,7 @@ class DashboardScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history_rounded),
-            tooltip: 'Dose History',
-            onPressed: () => context.push(AppRoutes.doseHistory),
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: 'Settings & Thresholds',
-            onPressed: () => context.push(AppRoutes.settings),
-          ),
-        ],
+
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -103,8 +89,8 @@ class DashboardScreen extends ConsumerWidget {
                           icon: Icons.inventory_2_outlined,
                           label: 'Total Items',
                           value: '$totalMeds',
-                          color: theme.colorScheme.primary,
-                          bgColor: theme.colorScheme.primaryContainer.withAlpha(80),
+                          color: AppColors.blue,
+                          bgColor: AppColors.sky.withValues(alpha: 0.20),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -114,8 +100,8 @@ class DashboardScreen extends ConsumerWidget {
                           icon: Icons.cancel_outlined,
                           label: 'Expired',
                           value: '$expiredCount',
-                          color: Colors.red.shade800,
-                          bgColor: Colors.red.shade50,
+                          color: AppColors.navy,
+                          bgColor: AppColors.sky.withValues(alpha: 0.20),
                         ),
                       ),
                     ],
@@ -129,8 +115,8 @@ class DashboardScreen extends ConsumerWidget {
                           icon: Icons.hourglass_bottom_rounded,
                           label: 'Expiring Soon',
                           value: '$expiringCount',
-                          color: Colors.amber.shade900,
-                          bgColor: Colors.amber.shade50,
+                          color: AppColors.navy,
+                          bgColor: AppColors.cyan.withValues(alpha: 0.15),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -140,8 +126,8 @@ class DashboardScreen extends ConsumerWidget {
                           icon: Icons.production_quantity_limits_rounded,
                           label: 'Low Stock',
                           value: '$lowStockCount',
-                          color: Colors.deepPurple.shade700,
-                          bgColor: Colors.deepPurple.shade50,
+                          color: AppColors.blue,
+                          bgColor: AppColors.cyan.withValues(alpha: 0.15),
                         ),
                       ),
                     ],
@@ -170,11 +156,6 @@ class DashboardScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  TextButton.icon(
-                    icon: const Icon(Icons.history_rounded, size: 18),
-                    label: const Text('History'),
-                    onPressed: () => context.push(AppRoutes.doseHistory),
-                  ),
                 ],
               ),
             ),
@@ -202,72 +183,6 @@ class DashboardScreen extends ConsumerWidget {
 
             // Attention Needed Section (Expired, Expiring Soon, Low Stock)
             const AttentionNeededSection(showHeader: true),
-
-            const SizedBox(height: 16),
-
-            // Today's Doses Header & Preview
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.alarm_rounded, color: theme.colorScheme.primary, size: 22),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Today's Medication Schedule",
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextButton(
-                    onPressed: () => context.go(AppRoutes.reminders),
-                    child: const Text('View All'),
-                  ),
-                ],
-              ),
-            ),
-
-            todayOccurrencesAsync.when(
-              data: (occurrences) {
-                if (occurrences.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Card(
-                      color: theme.colorScheme.surfaceContainerLow,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                      child: const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Center(
-                          child: Text('No doses scheduled for today.'),
-                        ),
-                      ),
-                    ),
-                  );
-                }
-
-                // Show first 3 occurrences on dashboard
-                final displayOccurrences = occurrences.take(3).toList();
-                return Column(
-                  children: displayOccurrences.map((occurrence) {
-                    return DoseOccurrenceCard(occurrence: occurrence);
-                  }).toList(),
-                );
-              },
-              loading: () => const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-              error: (err, _) => Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text('Error loading schedule: $err'),
-              ),
-            ),
           ],
         ),
       ),

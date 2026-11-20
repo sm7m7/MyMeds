@@ -5,6 +5,7 @@ import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication.dart';
 import 'package:my_meds/features/cabinet/presentation/providers/cabinet_providers.dart';
 import 'package:my_meds/features/cabinet/presentation/screens/medication_form_screen.dart';
+import 'package:my_meds/features/cabinet/presentation/widgets/medication_photo.dart';
 import 'package:my_meds/features/cabinet/presentation/widgets/medication_status_badge.dart';
 
 /// Detail screen displaying full inventory, schedule, and safety details for a cabinet item.
@@ -50,7 +51,6 @@ class CabinetDetailScreen extends ConsumerWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('${medication.name} removed from cabinet.'),
-              backgroundColor: Colors.grey[800],
             ),
           );
         } else {
@@ -92,7 +92,7 @@ class CabinetDetailScreen extends ConsumerWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: Colors.red),
+            icon: const Icon(Icons.delete_outline),
             tooltip: 'Delete Medication',
             onPressed: () => _handleDelete(context, ref),
           ),
@@ -118,17 +118,10 @@ class CabinetDetailScreen extends ConsumerWidget {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.surface,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.medication_rounded,
-                              size: 36,
-                              color: theme.colorScheme.primary,
-                            ),
+                          // Photo (or icon fallback)
+                          MedicationPhotoView(
+                            photoBase64: medication.photoBase64,
+                            size: 88,
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -138,7 +131,7 @@ class CabinetDetailScreen extends ConsumerWidget {
                                 Text(
                                   medication.name,
                                   style:
-                                      theme.textTheme.headlineSmall?.copyWith(
+                                  theme.textTheme.headlineSmall?.copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: theme.colorScheme.onPrimaryContainer,
                                   ),
@@ -213,8 +206,8 @@ class CabinetDetailScreen extends ConsumerWidget {
                           OutlinedButton.icon(
                             onPressed: medication.quantity > 0
                                 ? () => ref
-                                    .read(cabinetControllerProvider.notifier)
-                                    .adjustQuantity(medication, -1)
+                                .read(cabinetControllerProvider.notifier)
+                                .adjustQuantity(medication, -1)
                                 : null,
                             icon: const Icon(Icons.remove),
                             label: const Text('Log 1 Dose Taken'),

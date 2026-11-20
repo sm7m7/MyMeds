@@ -66,7 +66,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tabCabinet => 'الخزانة';
 
   @override
-  String get tabSearch => 'بحث';
+  String get tabSearch => 'المواعيد';
 
   @override
   String get tabReminders => 'التذكيرات';

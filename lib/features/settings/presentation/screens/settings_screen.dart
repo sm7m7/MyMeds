@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:my_meds/core/router/router.dart';
+import 'package:my_meds/core/theme/theme.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/auth/presentation/providers/auth_provider.dart';
 import 'package:my_meds/features/settings/data/demo_data_seeder.dart';
@@ -14,10 +17,10 @@ class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   Future<void> _handleSignOut(
-    BuildContext context,
-    WidgetRef ref,
-    AppLocalizations l10n,
-  ) async {
+      BuildContext context,
+      WidgetRef ref,
+      AppLocalizations l10n,
+      ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -42,10 +45,10 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   Future<void> _handleDeleteAccount(
-    BuildContext context,
-    WidgetRef ref,
-    AppLocalizations l10n,
-  ) async {
+      BuildContext context,
+      WidgetRef ref,
+      AppLocalizations l10n,
+      ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -68,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
 
     if (confirmed == true && context.mounted) {
       final success =
-          await ref.read(authControllerProvider.notifier).deleteAccount();
+      await ref.read(authControllerProvider.notifier).deleteAccount();
       if (!success && context.mounted) {
         final errorState = ref.read(authControllerProvider);
         final msg = errorState.error?.toString() ?? l10n.errorGeneric;
@@ -159,6 +162,7 @@ class SettingsScreen extends ConsumerWidget {
             // ── Preferences ─────────────────────────────────────────────────
             _SectionHeader(l10n.settingsPreferences),
             const SizedBox(height: 8),
+
             Card(
               child: Column(
                 children: [
@@ -168,6 +172,13 @@ class SettingsScreen extends ConsumerWidget {
                     subtitle: Text(langName),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => LanguagePickerSheet.show(context),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.history_rounded),
+                    title: const Text('Dose History'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.push(AppRoutes.doseHistory),
                   ),
                 ],
               ),
@@ -181,7 +192,7 @@ class SettingsScreen extends ConsumerWidget {
               builder: (context, ref, _) {
                 final settings = ref.watch(inventorySettingsProvider);
                 final controller =
-                    ref.read(inventorySettingsProvider.notifier);
+                ref.read(inventorySettingsProvider.notifier);
 
                 return Card(
                   child: Padding(
@@ -209,7 +220,7 @@ class SettingsScreen extends ConsumerWidget {
                                   max: 90,
                                   divisions: 83,
                                   label:
-                                      '${settings.expiringSoonDaysThreshold}d',
+                                  '${settings.expiringSoonDaysThreshold}d',
                                   onChanged: (val) =>
                                       controller.updateExpiringSoonDays(
                                           val.round()),
@@ -239,12 +250,12 @@ class SettingsScreen extends ConsumerWidget {
                               Expanded(
                                 child: Slider(
                                   value:
-                                      settings.lowStockThreshold.toDouble(),
+                                  settings.lowStockThreshold.toDouble(),
                                   min: 1,
                                   max: 20,
                                   divisions: 19,
                                   label:
-                                      '${settings.lowStockThreshold} units',
+                                  '${settings.lowStockThreshold} units',
                                   onChanged: (val) =>
                                       controller.updateLowStockThreshold(
                                           val.round()),
@@ -289,7 +300,7 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 8),
             Card(
               child: ListTile(
-                leading: const Icon(Icons.science_outlined, color: Colors.purple),
+                leading: const Icon(Icons.science_outlined, color: AppColors.blue),
                 title: const Text('Seed Demo Data'),
                 subtitle: const Text(
                   'Populate account with sample medications, reminders, dose history, and emergency card for demo.',
@@ -298,48 +309,47 @@ class SettingsScreen extends ConsumerWidget {
                 onTap: user == null
                     ? null
                     : () async {
-                        final confirmed = await showDialog<bool>(
-                          context: context,
-                          builder: (ctx) => AlertDialog(
-                            icon: const Icon(Icons.science_outlined, size: 40, color: Colors.purple),
-                            title: const Text('Seed Demo Data'),
-                            content: const Text(
-                              'This will add sample medications, reminders, dose logs, and an emergency card to your account.\n\nExisting data will NOT be deleted.',
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.of(ctx).pop(false),
-                                child: const Text('Cancel'),
-                              ),
-                              FilledButton(
-                                style: FilledButton.styleFrom(backgroundColor: Colors.purple),
-                                onPressed: () => Navigator.of(ctx).pop(true),
-                                child: const Text('Seed Data'),
-                              ),
-                            ],
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      icon: const Icon(Icons.science_outlined, size: 40, color: AppColors.blue),
+                      title: const Text('Seed Demo Data'),
+                      content: const Text(
+                        'This will add sample medications, reminders, dose logs, and an emergency card to your account.\n\nExisting data will NOT be deleted.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(false),
+                          child: const Text('Cancel'),
+                        ),
+                        FilledButton(
+                          onPressed: () => Navigator.of(ctx).pop(true),
+                          child: const Text('Seed Data'),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed == true && context.mounted) {
+                    try {
+                      final seeder = DemoDataSeeder();
+                      await seeder.seedUserDemoData(user.uid);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Demo data seeded successfully!'),
+                            backgroundColor: AppColors.blue,
                           ),
                         );
-                        if (confirmed == true && context.mounted) {
-                          try {
-                            final seeder = DemoDataSeeder();
-                            await seeder.seedUserDemoData(user.uid);
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('✅ Demo data seeded successfully!'),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error seeding data: $e')),
-                              );
-                            }
-                          }
-                        }
-                      },
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error seeding data: $e')),
+                        );
+                      }
+                    }
+                  }
+                },
               ),
             ),
             const SizedBox(height: 24),

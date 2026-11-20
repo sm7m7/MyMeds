@@ -208,10 +208,10 @@ abstract class AppLocalizations {
   /// **'Cabinet'**
   String get tabCabinet;
 
-  /// Bottom nav tab: Search
+  /// Bottom nav tab: Appointments
   ///
   /// In en, this message translates to:
-  /// **'Search'**
+  /// **'Appointments'**
   String get tabSearch;
 
   /// Bottom nav tab: Reminders

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_meds/core/router/router.dart';
+import 'package:my_meds/core/theme/theme.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication_form.dart';
 import 'package:my_meds/features/cabinet/domain/models/medication_status.dart';
@@ -53,18 +54,6 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Medicine Cabinet'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.document_scanner_outlined),
-            tooltip: 'AI Label Scanner',
-            onPressed: () => context.push(AppRoutes.scan),
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip: 'Add Medication',
-            onPressed: _openAddMedication,
-          ),
-        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openAddMedication,
@@ -117,9 +106,9 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
                       isSelected: selectedStatus == null && selectedForm == null,
                       onTap: () {
                         ref.read(cabinetStatusFilterProvider.notifier).state =
-                            null;
+                        null;
                         ref.read(cabinetFormFilterProvider.notifier).state =
-                            null;
+                        null;
                       },
                     ),
                     const SizedBox(width: 8),
@@ -131,9 +120,9 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
                         isSelected: selectedStatus == MedicationStatus.expired,
                         onTap: () {
                           ref.read(cabinetStatusFilterProvider.notifier).state =
-                              selectedStatus == MedicationStatus.expired
-                                  ? null
-                                  : MedicationStatus.expired;
+                          selectedStatus == MedicationStatus.expired
+                              ? null
+                              : MedicationStatus.expired;
                         },
                       ),
                       const SizedBox(width: 8),
@@ -144,12 +133,12 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
                         label: '$expiringCount Expiring Soon',
                         color: Colors.orange[800]!,
                         isSelected:
-                            selectedStatus == MedicationStatus.expiringSoon,
+                        selectedStatus == MedicationStatus.expiringSoon,
                         onTap: () {
                           ref.read(cabinetStatusFilterProvider.notifier).state =
-                              selectedStatus == MedicationStatus.expiringSoon
-                                  ? null
-                                  : MedicationStatus.expiringSoon;
+                          selectedStatus == MedicationStatus.expiringSoon
+                              ? null
+                              : MedicationStatus.expiringSoon;
                         },
                       ),
                       const SizedBox(width: 8),
@@ -158,13 +147,13 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
                     if (lowStockCount > 0) ...[
                       _buildSummaryBadge(
                         label: '$lowStockCount Low Stock',
-                        color: Colors.blue[800]!,
+                        color: AppColors.navy,
                         isSelected: selectedStatus == MedicationStatus.lowStock,
                         onTap: () {
                           ref.read(cabinetStatusFilterProvider.notifier).state =
-                              selectedStatus == MedicationStatus.lowStock
-                                  ? null
-                                  : MedicationStatus.lowStock;
+                          selectedStatus == MedicationStatus.lowStock
+                              ? null
+                              : MedicationStatus.lowStock;
                         },
                       ),
                     ],
@@ -196,7 +185,7 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
                         selected: isSelected,
                         onSelected: (_) {
                           ref.read(cabinetFormFilterProvider.notifier).state =
-                              isSelected ? null : form;
+                          isSelected ? null : form;
                         },
                       ),
                     );
@@ -373,14 +362,14 @@ class _CabinetScreenState extends ConsumerState<CabinetScreen> {
               label: const Text('Add Medication'),
               style: FilledButton.styleFrom(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
             ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
               onPressed: () => context.go(AppRoutes.search),
-              icon: const Icon(Icons.search),
-              label: const Text('Search Drug Database'),
+              icon: const Icon(Icons.event),
+              label: const Text('Doctor Appointments'),
             ),
           ],
         ),

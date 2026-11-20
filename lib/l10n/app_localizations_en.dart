@@ -66,7 +66,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabCabinet => 'Cabinet';
 
   @override
-  String get tabSearch => 'Search';
+  String get tabSearch => 'Appointments';
 
   @override
   String get tabReminders => 'Reminders';

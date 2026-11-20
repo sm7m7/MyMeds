@@ -35,8 +35,8 @@ class BottomNavShell extends StatelessWidget {
             label: l10n.tabCabinet,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.search_outlined),
-            selectedIcon: const Icon(Icons.search),
+            icon: const Icon(Icons.event_outlined),
+            selectedIcon: const Icon(Icons.event),
             label: l10n.tabSearch,
           ),
           NavigationDestination(

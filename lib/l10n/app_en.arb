@@ -32,8 +32,8 @@
 
   "tabCabinet": "Cabinet",
   "@tabCabinet": { "description": "Bottom nav tab: Cabinet" },
-  "tabSearch": "Search",
-  "@tabSearch": { "description": "Bottom nav tab: Search" },
+  "tabSearch": "Appointments",
+  "@tabSearch": { "description": "Bottom nav tab: Appointments" },
   "tabReminders": "Reminders",
   "@tabReminders": { "description": "Bottom nav tab: Reminders" },
   "tabDashboard": "Dashboard",

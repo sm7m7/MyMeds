@@ -5,6 +5,7 @@ import 'package:my_meds/core/router/router.dart';
 import 'package:my_meds/core/widgets/medical_disclaimer.dart';
 import 'package:my_meds/features/auth/presentation/providers/auth_provider.dart';
 import 'package:my_meds/features/settings/presentation/providers/locale_providers.dart';
+import 'package:my_meds/features/settings/presentation/providers/theme_providers.dart';
 import 'package:my_meds/features/settings/presentation/widgets/language_picker_sheet.dart';
 import 'package:my_meds/l10n/app_localizations.dart';
 
@@ -18,6 +19,7 @@ class MoreScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final user = ref.watch(currentUserProvider);
     final locale = ref.watch(localeProvider);
+    final isDark = ref.watch(themeModeProvider) == ThemeMode.dark;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.moreTitle)),
@@ -49,21 +51,6 @@ class MoreScreen extends ConsumerWidget {
             ),
           const SizedBox(height: 8),
 
-          // Drug Interactions
-          ListTile(
-            leading: const Icon(Icons.warning_amber_rounded),
-            title: Text(l10n.moreInteractions),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.interactions),
-          ),
-
-          // Scan Label
-          ListTile(
-            leading: const Icon(Icons.document_scanner_outlined),
-            title: Text(l10n.moreScan),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(AppRoutes.scan),
-          ),
 
           // Healthcare & Pharmacy Locator
           ListTile(
@@ -76,7 +63,10 @@ class MoreScreen extends ConsumerWidget {
 
           // Emergency Medical Card
           ListTile(
-            leading: const Icon(Icons.contact_emergency_outlined, color: Colors.red),
+            leading: Icon(
+              Icons.contact_emergency_outlined,
+              color: theme.colorScheme.primary,
+            ),
             title: const Text(
               'Emergency Medical Card',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -94,6 +84,18 @@ class MoreScreen extends ConsumerWidget {
             onTap: () => context.push(AppRoutes.settings),
           ),
 
+          // Dark mode switch
+          SwitchListTile(
+            secondary: Icon(
+              isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+            ),
+            title: const Text('Dark mode'),
+            value: isDark,
+            onChanged: (value) => ref
+                .read(themeModeProvider.notifier)
+                .setMode(value ? ThemeMode.dark : ThemeMode.light),
+          ),
+
           // Language
           ListTile(
             leading: const Icon(Icons.language_outlined),
@@ -102,8 +104,8 @@ class MoreScreen extends ConsumerWidget {
               locale?.languageCode == 'fr'
                   ? 'Français'
                   : locale?.languageCode == 'ar'
-                      ? 'العربية'
-                      : 'English',
+                  ? 'العربية'
+                  : 'English',
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => LanguagePickerSheet.show(context),
